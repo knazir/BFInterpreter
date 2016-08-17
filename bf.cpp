@@ -43,6 +43,7 @@ void processSymbol(char symbol, char*& ptr) {
             exitWithErrorMessage("Symbol ']' is currently not supported.");
             break;
         case ',':
+            cin >> *ptr;
             break;
         case '.':
             cout << *ptr;
