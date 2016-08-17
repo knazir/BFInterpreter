@@ -1,0 +1,8 @@
+# Compiled files
+*.o
+
+# CLion
+.idea/
+
+# OSX
+.DS_Store/
