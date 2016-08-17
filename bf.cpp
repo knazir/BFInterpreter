@@ -1,11 +1,16 @@
 #include <fstream>
 #include <iostream>
+#include <stack>
 #include <sstream>
 
 #define BUFFER_SIZE 30000
 #define ERROR_STATUS 1
 
 using namespace std;
+
+/* Globals */
+static char *ptr = (char*)calloc(BUFFER_SIZE, sizeof(char));
+static stack<int> loopIndices;
 
 void exitWithErrorMessage(std::string message) {
     cerr << message << endl;
@@ -22,42 +27,47 @@ string readContents(char *argv[]) {
     return contentStream.str();
 }
 
-void processSymbol(char symbol, char*& ptr) {
+void processSymbol(char symbol, int& index) {
     switch(symbol) {
-        case '>':
+        case '>': {
             ptr++;
             break;
-        case '<':
+        } case '<': {
             ptr--;
             break;
-        case '+':
+        } case '+': {
             (*ptr)++;
             break;
-        case '-':
+        } case '-': {
             (*ptr)--;
             break;
-        case '[':
-            exitWithErrorMessage("Symbol '[' is currently not supported.");
+        } case '[': {
+            loopIndices.push(index);
             break;
-        case ']':
-            exitWithErrorMessage("Symbol ']' is currently not supported.");
+        } case ']': {
+            if (*ptr) {
+                index = loopIndices.top();
+            } else {
+                loopIndices.pop();
+            }
             break;
-        case ',':
+        } case ',': {
             cin >> *ptr;
             break;
-        case '.':
+        } case '.': {
             cout << *ptr;
             break;
-        case '#':
-        default:
+        } case '#': {
+            // TODO: Add debug symbol support
+            break;
+        } default:
             break;
     }
 }
 
 void run(string contents) {
-    char *ptr = (char*)malloc(BUFFER_SIZE * sizeof(char));
-    for (char ch : contents) {
-        processSymbol(ch, ptr);
+    for (int i = 0; i < contents.length(); i++) {
+        processSymbol(contents[i], i);
     }
 }
 
@@ -66,6 +76,7 @@ int main(int argc, char *argv[]) {
         exitWithErrorMessage("Please provide a file to interpret.");
     } else {
         string contents = readContents(argv);
+        // TODO: Add preprocessing for loop closure and debug symbols
         run(contents);
         return 0;
     }
