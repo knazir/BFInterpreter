@@ -27,7 +27,7 @@ string readContents(char *argv[]) {
     return contentStream.str();
 }
 
-void processSymbol(char symbol, int& index) {
+void processSymbol(char symbol, int& index, string contents) {
     switch(symbol) {
         case '>': {
             ptr++;
@@ -42,6 +42,7 @@ void processSymbol(char symbol, int& index) {
             (*ptr)--;
             break;
         } case '[': {
+            // Most of the code I've seen treats '[' as a do-while loop
             loopIndices.push(index);
             break;
         } case ']': {
@@ -67,7 +68,7 @@ void processSymbol(char symbol, int& index) {
 
 void run(string contents) {
     for (int i = 0; i < contents.length(); i++) {
-        processSymbol(contents[i], i);
+        processSymbol(contents[i], i, contents);
     }
 }
 

@@ -2,6 +2,7 @@
 *.bf
 
 # Compiled files
+Debug/
 *.o
 
 # CLion
